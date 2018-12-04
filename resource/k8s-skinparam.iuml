@@ -1,0 +1,4 @@
+skinparam component {
+  backgroundColor White
+  fontColor MediumBlue
+}

@@ -1,0 +1,74 @@
+@startuml
+
+title Service landscape - sidecar proxy
+skinparam componentStyle uml2
+
+actor Admin
+
+package "namespace: Control Plane" #LightSalmon {
+
+  package "pod: Pilot" #White {
+    component "Rules API" as rulesAPI
+    component "envoy API" as envoyAPI
+  }
+}
+
+package "namespace: Service" #LightBlue {
+
+  package "pod: Application 1" #White {
+    component "container:\n APP1" as APP1
+    component "container:\n envoy/Proxy" as APP1Proxy
+  }
+
+  package "pod: Application 2" #White {
+    component "container:\n envoy/Proxy" as APP2Proxy
+    component "container:\n APP2" as APP2
+  }
+
+  package "pod: Ingress" #Yellow {
+    component "container:\n envoy/Ingress" as Ingress
+  }
+  package "pod: Egress" #Yellow {
+    component "container:\n envoy/Egress" as Egress
+  }
+
+}
+
+package "External/Client" #LightGreen {
+  component Client
+}
+package "External/Server" #LightGreen {
+  component Server
+}
+
+Admin -d-> rulesAPI #Blue
+
+envoyAPI -l-> APP1Proxy #Blue
+envoyAPI -l-> APP2Proxy #Blue
+
+rulesAPI -d-> envoyAPI #Blue
+
+APP1Proxy --> APP2Proxy
+APP2Proxy --> APP1Proxy
+
+APP1 -d-> APP1Proxy
+APP1Proxy -u-> APP1
+
+APP2 -u-> APP2Proxy
+APP2Proxy -d-> APP2
+
+Client -u-> Ingress
+Egress -d-> Server
+
+Ingress -l-> APP1Proxy
+APP2Proxy -r-> Egress
+
+
+legend
+  * Blue: Management traffic
+  * Red: Service traffic
+end legend
+
+@enduml
+
+

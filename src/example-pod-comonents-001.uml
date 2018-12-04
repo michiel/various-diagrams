@@ -1,0 +1,45 @@
+@startuml
+title Pod config
+
+!include ../resource/k8s-skinparam.iuml
+!include ../resource/k8s-sprites-unlabeled-full.iuml
+
+package "Network" #Pink {
+  component "out: TCP/8443" as tcp8443
+  component "in: TCP/2020" as tcp2020
+}
+
+package "Storage" #LightBlue {
+  component "<$pvc{scale=0.3}>\nshared-logs" as pvc1
+  component "<$pvc{scale=0.3}>\nuser-data" as pvc2
+}
+
+package "Compute" #LightSalmon {
+  component "<$ds{scale=0.3}>\nDaemonSet" as controller
+}
+
+package "Config" #LightGreen {
+  component "<$secret{scale=0.3}>\nSecret" as secret1
+}
+
+component "Pod logging" as Pod {
+  component "Splunk" as SplunkUF
+  component "fluent-bit" as fluentbit
+  component "mtail" as mtail
+}
+
+SplunkUF -d-> pvc1
+SplunkUF -d-> pvc2
+fluentbit -d-> pvc2
+mtail -d-> pvc1
+
+SplunkUF -u-> tcp8443: https/Upstream
+tcp2020 -d-> fluentbit : http/Metrics
+tcp2020 -d-> mtail : http/Metrics
+
+controller -r-> Pod
+
+secret1 -l-> fluentbit
+
+@enduml
+

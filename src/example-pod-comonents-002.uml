@@ -1,0 +1,47 @@
+@startuml
+title Pod config
+
+' !include ../resource/k8s-skinparam.iuml
+!include ../resource/k8s-sprites-unlabeled-full.iuml
+
+package "Network in" #Pink {
+  component "in: TCP/2020" as tcp2020
+  component "in: TCP/2021" as tcp2021
+}
+
+package "Network out" #Pink {
+  component "out: TCP/8443" as tcp8443
+}
+
+package "Storage" #LightBlue {
+  component "emptyDir:\nsplunk-logs" as pvc1
+  component "hostMount:\nnode-logs" as pvc2
+}
+
+component "pod: logging" as Pod {
+  component "container:\nSplunk" as SplunkUF
+  component "container:\nfluent-bit" as fluentbit
+  component "container:\nmtail" as mtail
+}
+
+component AppLogs
+
+mtail -d-> pvc1
+SplunkUF -d-> pvc1
+fluentbit -d-> pvc2 #Blue
+
+SplunkUF -u-> tcp8443 #Blue : s2s
+tcp2020 -d-> fluentbit : http-metrics
+tcp2021 -d-> mtail : http-metrics
+
+fluentbit -l-> SplunkUF #Blue
+
+Pod -[hidden]- AppLogs
+
+legend
+  * Blue : Service
+  * Red : Metrics
+end legend
+
+@enduml
+

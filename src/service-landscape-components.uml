@@ -1,0 +1,65 @@
+@startuml
+title Service landscape
+
+actor Admin
+
+package "Management" {
+  interface "Pane of glass" as Pane
+}
+
+package "Monitoring" #Pink {
+  component "Logs (ES)" as Logs
+  database LogsStorage
+  component "Metrics (Prometheus)" as Metrics
+  database MetricsStorage
+  component "Tracing (Jaeger)" as Tracing
+  database TracingStorage
+}
+
+package "Service" #LightBlue {
+  package "Service 1" #White {
+    component "SVC" as SVC1
+    component "Policy Agent" as PolicyAgent1
+  }
+
+  package "Service 2" #White {
+    component "SVC" as SVC2
+    component "Policy Agent" as PolicyAgent2
+  }
+
+  package "AAA" #White {
+    component "Token issuer" as TokenIssuer
+    component "Policy Agent" as PolicyAgentAAA
+  }
+
+  component "Logging" as ServiceLogging
+  component "Metrics" as ServiceMetrics
+}
+
+package "Access" {
+  interface Ingress
+}
+
+actor User
+
+Logs -u-> LogsStorage
+Metrics -u-> MetricsStorage
+Tracing -u-> TracingStorage
+
+Admin -d-> Pane
+
+Pane -d-> LogsStorage
+Pane -d-> MetricsStorage
+Pane -d-> TracingStorage
+
+
+User -u-> Ingress
+Ingress -u-> TokenIssuer
+
+ServiceLogging -u-> Logs
+
+ServiceMetrics -u-> Metrics
+
+
+@enduml
+

@@ -1,0 +1,40 @@
+@startuml
+
+title Service landscape - central proxy
+skinparam componentStyle uml2
+
+package "namespace: Service" #LightBlue {
+  package "pod: Application 1" #White {
+    component "container: APP1" as APP1
+  }
+
+  package "pod: Proxy" #White {
+  component "container: Proxy" as Proxy
+  }
+
+  package "pod: Application 2" #White {
+    component "container: APP2" as APP2
+  }
+
+  package "pod: Application 3" #White {
+   component "container: APP3" as APP3
+  }
+
+}
+
+APP1 -d-> Proxy
+Proxy -u-> APP1
+
+APP2 -u-> Proxy
+Proxy -d-> APP2
+
+APP3 -u-> Proxy
+Proxy -d-> APP3
+
+legend
+  Connections : 2(n-1)
+end legend
+
+@enduml
+
+

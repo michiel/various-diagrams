@@ -1,0 +1,50 @@
+@startuml
+!include ../resource/k8s-skinparam.iuml
+!include ../resource/k8s-sprites-labeled-50pct.iuml
+package "Control plane" {
+  component "<$sched>" as sched
+  component "<$c_c_m>" as c_c_m
+  component "<$c_m>" as c_m
+  component "<$kubelet>" as kubelet
+  component "<$api>" as api
+  component "<$k_proxy>" as k_proxy
+}
+package "Infrastructure" {
+  component "<$master>" as master
+  component "<$etcd>" as etcd
+  component "<$node>" as node
+}
+package "Kubernetes resources" {
+  component "<$group>" as group
+  component "<$sa>" as sa
+  component "<$user>" as user
+  component "<$pv>" as pv
+  component "<$job>" as job
+  component "<$pod>" as pod
+  component "<$crb>" as crb
+  component "<$sts>" as sts
+  component "<$ing>" as ing
+  component "<$role>" as role
+  component "<$cm>" as cm
+  component "<$netpol>" as netpol
+  component "<$ns>" as ns
+  component "<$secret>" as secret
+  component "<$quota>" as quota
+  component "<$rb>" as rb
+  component "<$ep>" as ep
+  component "<$pvc>" as pvc
+  component "<$c_role>" as c_role
+  component "<$cronjob>" as cronjob
+  component "<$ds>" as ds
+  component "<$sc>" as sc
+  component "<$svc>" as svc
+  component "<$deploy>" as deploy
+  component "<$crd>" as crd
+  component "<$hpa>" as hpa
+  component "<$psp>" as psp
+  component "<$vol>" as vol
+  component "<$rs>" as rs
+  component "<$limits>" as limits
+}
+@enduml
+

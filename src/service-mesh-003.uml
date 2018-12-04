@@ -1,0 +1,48 @@
+@startuml
+
+title Service landscape - sidecar proxy
+skinparam componentStyle uml2
+
+package "namespace: Service" #LightBlue {
+  package "pod: Application 1" #White {
+    component "container: APP1" as APP1
+    component "container: Proxy" as APP1Proxy
+  }
+
+  package "pod: Application 2" #White {
+    component "container: Proxy" as APP2Proxy
+    component "container: APP2" as APP2
+  }
+
+  package "pod: Application 3" #White {
+   component "container: APP3" as APP3
+    component "container: Proxy" as APP3Proxy
+  }
+
+}
+
+APP1Proxy --> APP2Proxy
+APP1Proxy --> APP3Proxy
+
+APP2Proxy --> APP1Proxy
+APP2Proxy --> APP3Proxy
+
+APP3Proxy --> APP1Proxy
+APP3Proxy --> APP2Proxy
+
+APP1 -d-> APP1Proxy
+APP1Proxy -u-> APP1
+
+APP2 -u-> APP2Proxy
+APP2Proxy -d-> APP2
+
+APP3 -u-> APP3Proxy
+APP3Proxy -d-> APP3
+
+legend
+  Connections : 2n + n(n-1)
+end legend
+
+@enduml
+
+
