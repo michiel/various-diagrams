@@ -1,35 +1,39 @@
 @startuml
 
-title Service landscape - sidecar proxy
+title Service landscape - Istio
 skinparam componentStyle uml2
 
 actor Admin
 
 package "namespace: Control Plane" #LightSalmon {
 
+  interface "Rules API" as rulesAPI
+
   package "pod: Pilot" #White {
-    component "Rules API" as rulesAPI
-    component "envoy API" as envoyAPI
+    component "container:\n<b><b>Pilot</b>" as Pilot
+  }
+  package "pod: Mixer" #White {
+    component "container:\n<b>Mixer</b>" as Mixer
   }
 }
 
-package "namespace: Service" #LightBlue {
+package "namespace: Application Service" #LightBlue {
 
   package "pod: Application 1" #White {
-    component "container:\n APP1" as APP1
-    component "container:\n envoy/Proxy" as APP1Proxy
+    component "container:\n<b> APP1 </b>" as APP1
+    component "container:\n<b> envoy/Proxy</b>" as APP1Proxy #Yellow
   }
 
   package "pod: Application 2" #White {
-    component "container:\n envoy/Proxy" as APP2Proxy
-    component "container:\n APP2" as APP2
+    component "container:\n<b> envoy/Proxy</b>" as APP2Proxy #Yellow
+    component "container:\n<b> APP2</b>" as APP2
   }
 
-  package "pod: Ingress" #Yellow {
-    component "container:\n envoy/Ingress" as Ingress
+  package "pod: Ingress" #White {
+    component "container:\n<b> envoy/Ingress</b>" as Ingress #Yellow
   }
-  package "pod: Egress" #Yellow {
-    component "container:\n envoy/Egress" as Egress
+  package "pod: Egress" #White {
+    component "container:\n<b> envoy/Egress</b>" as Egress #Yellow
   }
 
 }
@@ -43,10 +47,14 @@ package "External/Server" #LightGreen {
 
 Admin -d-> rulesAPI #Blue
 
-envoyAPI -l-> APP1Proxy #Blue
-envoyAPI -l-> APP2Proxy #Blue
+Pilot -l-> APP1Proxy #Blue
+Pilot -l-> APP2Proxy #Blue
 
-rulesAPI -d-> envoyAPI #Blue
+Mixer -l-> APP1Proxy #Blue
+Mixer -l-> APP2Proxy #Blue
+
+rulesAPI -r-> Pilot #Blue
+rulesAPI -d-> Mixer #Blue
 
 APP1Proxy --> APP2Proxy
 APP2Proxy --> APP1Proxy
@@ -63,10 +71,10 @@ Egress -d-> Server
 Ingress -l-> APP1Proxy
 APP2Proxy -r-> Egress
 
-
 legend
   * Blue: Management traffic
   * Red: Service traffic
+  * Arrow indicates connection initiation, not data flow
 end legend
 
 @enduml

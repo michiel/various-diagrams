@@ -9,7 +9,7 @@ package "namespace: Service" #LightBlue {
   }
 
   package "pod: Proxy" #White {
-  component "container: Proxy" as Proxy
+  component "container: Proxy" as Proxy #Yellow
   }
 
   package "pod: Application 2" #White {

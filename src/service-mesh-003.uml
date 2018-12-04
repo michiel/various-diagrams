@@ -6,17 +6,17 @@ skinparam componentStyle uml2
 package "namespace: Service" #LightBlue {
   package "pod: Application 1" #White {
     component "container: APP1" as APP1
-    component "container: Proxy" as APP1Proxy
+    component "container: Proxy" as APP1Proxy #Yellow
   }
 
   package "pod: Application 2" #White {
-    component "container: Proxy" as APP2Proxy
+    component "container: Proxy" as APP2Proxy #Yellow
     component "container: APP2" as APP2
   }
 
   package "pod: Application 3" #White {
-   component "container: APP3" as APP3
-    component "container: Proxy" as APP3Proxy
+    component "container: APP3" as APP3
+    component "container: Proxy" as APP3Proxy #Yellow
   }
 
 }
