@@ -1,0 +1,29 @@
+@startuml
+
+skinparam componentStyle uml2
+
+component Prometheus
+actor User
+
+interface "http/metrics" as metrics
+
+interface "http/Service" as Service
+
+package "Pod" #White {
+  component "mtail" as mtail
+  database "Shared Volume - logs" as Logs
+  component "Application" as App
+}
+
+User -d-> Service
+Prometheus -d-> metrics
+
+Service -d-> App
+App -d-> Logs : write\nlogs
+mtail -d-> Logs : tail\nlogs
+metrics -d-> mtail : collect
+
+mtail -> mtail : extract\nmetrics
+
+@enduml
+

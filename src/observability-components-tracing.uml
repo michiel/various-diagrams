@@ -1,0 +1,37 @@
+@startuml
+
+skinparam componentStyle uml2
+
+scale 4
+
+title Observability
+
+package "Products" {
+  component Accounting
+  component Alerting
+  component Diagnostics
+  component Monitoring
+  component Reporting
+}
+
+package "Data" #LightBlue {
+  component "Tracing" as Tracing
+}
+
+
+package "Source" #White {
+  component "Solution component" as Component
+}
+
+
+Component -u-> Tracing
+
+Tracing --u-> Accounting
+Tracing --u-> Alerting
+Tracing --u-> Reporting
+Tracing --u-> Monitoring
+Tracing --u-> Diagnostics
+
+
+@enduml
+

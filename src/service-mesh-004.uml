@@ -47,11 +47,11 @@ package "External/Server" #LightGreen {
 
 Admin -d-> rulesAPI #Blue
 
-Pilot -l-> APP1Proxy #Blue
-Pilot -l-> APP2Proxy #Blue
+Pilot .-> APP1Proxy #Blue
+Pilot .-> APP2Proxy #Blue
 
-Mixer -l-> APP1Proxy #Blue
-Mixer -l-> APP2Proxy #Blue
+APP1Proxy -r-> Mixer #Blue
+APP2Proxy -r-> Mixer #Blue
 
 rulesAPI -r-> Pilot #Blue
 rulesAPI -d-> Mixer #Blue
